@@ -1,49 +1,59 @@
 import { useCallback, useState } from 'react';
 
-import type Board from '@/lib/goKit/core/model/board';
+import Board from '@/lib/goKit/core/model/board';
 import type Coordinate from '@/lib/goKit/core/model/coordinate';
 import type Move from '@/lib/goKit/core/model/move';
 import type Stone from '@/lib/goKit/core/model/stone';
 import TutorEditor, { type TutorEditorPlaceMode } from '@/lib/goKit/editor/tutorEditor';
 
+type TutorEditorState = {
+  currentBoard: Board;
+  currentMove: Move | null;
+  currentTurn: Stone;
+  placeMode: TutorEditorPlaceMode;
+};
+
+function getEditorState(tutorEditor: TutorEditor): TutorEditorState {
+  return {
+    currentBoard: tutorEditor.currentBoard,
+    currentMove: tutorEditor.currentMove,
+    currentTurn: tutorEditor.currentTurn,
+    placeMode: tutorEditor.placeMode,
+  };
+}
+
 export default function useTutorEditor(tutorEditor: TutorEditor) {
   const [editor] = useState(tutorEditor);
-  const [currentBoard, setBoard] = useState<Board>(editor.currentBoard);
-  const [currentMove, setMove] = useState<Move | null>(editor.currentMove);
-  const [currentTurn, setCurrentTurn] = useState<Stone>(editor.currentTurn);
-  const [mode, setMode] = useState<TutorEditorPlaceMode>(editor.placeMode);
+  const [editorState, setEditorState] = useState(getEditorState(editor));
 
   const validateAndPlaceMove = useCallback(
     (coordinate: Coordinate): boolean => {
       const success = editor.validateAndPlaceMove(coordinate);
       if (success) {
-        setBoard(editor.currentBoard);
-        setMove(editor.currentMove);
-        setCurrentTurn(editor.currentTurn);
+        setEditorState(getEditorState(editor));
       }
       return success;
     },
     [editor],
   );
 
-  const setTurn = useCallback(
+  const setCurrentTurn = useCallback(
     (turn: Stone) => {
       editor.currentTurn = turn;
-      setCurrentTurn(editor.currentTurn);
+      setEditorState(getEditorState(editor));
     },
     [editor],
   );
 
   const toggleTurn = useCallback(() => {
     editor.toggleTurn();
-    setCurrentTurn(editor.currentTurn);
+    setEditorState(getEditorState(editor));
   }, [editor]);
 
   const setPlaceMode = useCallback(
     (mode: TutorEditorPlaceMode) => {
       editor.placeMode = mode;
-      setMode(editor.placeMode);
-      setCurrentTurn(editor.currentTurn);
+      setEditorState(getEditorState(editor));
     },
     [editor],
   );
@@ -51,9 +61,7 @@ export default function useTutorEditor(tutorEditor: TutorEditor) {
   const undo = useCallback(
     (steps: number) => {
       editor.undo(steps);
-      setBoard(editor.currentBoard);
-      setMove(editor.currentMove);
-      setCurrentTurn(editor.currentTurn);
+      setEditorState(getEditorState(editor));
     },
     [editor],
   );
@@ -61,46 +69,38 @@ export default function useTutorEditor(tutorEditor: TutorEditor) {
   const redo = useCallback(
     (steps: number) => {
       editor.redo(steps);
-      setBoard(editor.currentBoard);
-      setMove(editor.currentMove);
-      setCurrentTurn(editor.currentTurn);
+      setEditorState(getEditorState(editor));
     },
     [editor],
   );
 
   const undoAll = useCallback(() => {
     editor.undoAll();
-    setBoard(editor.currentBoard);
-    setMove(editor.currentMove);
-    setCurrentTurn(editor.currentTurn);
+    setEditorState(getEditorState(editor));
   }, [editor]);
 
   const redoAll = useCallback(() => {
     editor.redoAll();
-    setBoard(editor.currentBoard);
-    setMove(editor.currentMove);
-    setCurrentTurn(editor.currentTurn);
+    setEditorState(getEditorState(editor));
   }, [editor]);
 
   const reset = useCallback(
-    (newBoard: Board) => {
+    (newBoard: Board = new Board(editor.currentBoard.dimension)) => {
       editor.reset(newBoard);
-      setBoard(editor.currentBoard);
-      setMove(editor.currentMove);
-      setCurrentTurn(editor.currentTurn);
+      setEditorState(getEditorState(editor));
     },
     [editor],
   );
 
   return {
-    currentBoard,
-    currentMove,
-    currentTurn,
-    placeMode: mode,
+    currentBoard: editorState.currentBoard,
+    currentMove: editorState.currentMove,
+    currentTurn: editorState.currentTurn,
+    placeMode: editorState.placeMode,
     validateAndPlaceMove,
     setPlaceMode,
     toggleTurn,
-    setTurn,
+    setCurrentTurn,
     undo,
     redo,
     undoAll,
