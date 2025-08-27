@@ -33,14 +33,14 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20   # react-router v7 이상은 Node 20 필요
-          cache: 'yarn'      # npm → yarn 캐시로 변경
+          node-version: 20 # react-router v7 이상은 Node 20 필요
+          cache: 'yarn' # npm → yarn 캐시로 변경
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile   # npm ci → yarn install
+        run: yarn install --frozen-lockfile # npm ci → yarn install
 
       - name: Build
-        run: yarn build   # npm run build → yarn build
+        run: yarn build # npm run build → yarn build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
