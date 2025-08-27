@@ -1,10 +1,13 @@
+import boardSrc from '@/assets/board.jpg';
+import blackStoneSrc from '@/assets/stone_black.svg';
+import whiteStoneSrc from '@/assets/stone_white.svg';
 import type { BoardStyleConfig } from '@/go/configs/boardStyleConfig';
 
 export default class BasicBoardStyleConfig implements BoardStyleConfig {
   readonly bgColor = '#E2E0CC';
-  readonly bgImageUrl = '/board.jpg';
-  readonly blackStoneImageUrl = '/stone_black.svg';
-  readonly whiteStoneImageUrl = '/stone_white.svg';
+  readonly bgImageUrl = boardSrc;
+  readonly blackStoneImageUrl = blackStoneSrc;
+  readonly whiteStoneImageUrl = whiteStoneSrc;
   // readonly lineColor = '#797876';
   readonly lineColor = '#000000';
   // readonly starPointColor = '#8C878A';
