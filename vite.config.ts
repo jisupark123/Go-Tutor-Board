@@ -10,5 +10,5 @@ export default defineConfig({
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
-  // base: '/Go-Tutor-Board/',
+  base: '/Go-Tutor-Board/',
 });
