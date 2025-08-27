@@ -1,0 +1,29 @@
+name: Deploy Vite + React to GitHub Pages
+
+on:
+  push:
+    branches: [main] # main 브랜치에 push할 때 실행
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'yarn' # 👉 yarn 캐싱
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile # 👉 npm install → yarn install
+
+      - name: Build
+        run: yarn build # 👉 npm run build → yarn build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
