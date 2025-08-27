@@ -12,7 +12,9 @@ import ChevronLeft from '@/assets/icons/chevron-left.svg?react';
 import ChevronRight from '@/assets/icons/chevron-right.svg?react';
 import ChevronDoubleLeft from '@/assets/icons/chevrons-left.svg?react';
 import ChevronDoubleRight from '@/assets/icons/chevrons-right.svg?react';
+import Trash from '@/assets/icons/trash.svg?react';
 import ToggleButtonGroup from '@/global/components/ToggleButtonGroup';
+import ToggleFullScreenButton from '@/global/components/ToggleFullScreenButton';
 import CanvasBoardView from '@/go/components/CanvasBoardView';
 import BasicBoardStyleConfig from '@/go/configs/basicBoardStyleConfig';
 
@@ -39,7 +41,7 @@ function Home() {
     placeMode,
     validateAndPlaceMove,
     setPlaceMode,
-    setTurn,
+    setCurrentTurn,
     undo,
     redo,
     undoAll,
@@ -64,11 +66,11 @@ function Home() {
   return (
     <div className='w-[100vw] h-[100vh] flex flex-col justify-center items-center gap-[20px] bg-bg'>
       <menu
-        className='w-[800px] py-[10px] px-[20px] border-solid border-[1px] border-light-gray rounded-[8px] flex items-center gap-[20px]
+        className='relative w-[900px] py-[10px] px-[20px] border-solid border-[1px] border-light-gray rounded-[8px] flex items-center gap-[20px]
       '
       >
         <button
-          className='w-[40px] h-[40px] bg-light-gray text-[20px] font-bold rounded-[8px] flex items-center justify-center'
+          className='w-[40px] h-[40px] bg-dark-gray text-[20px] text-light-text font-bold rounded-[8px] flex items-center justify-center hover:bg-light-gray transition-colors duration-200'
           onClick={handleBoardDimensionButtonClick}
         >
           {boardDimension}
@@ -84,39 +86,45 @@ function Home() {
             options={currentTurnOptions}
             defaultValue={currentTurn}
             value={currentTurn}
-            onChange={setTurn}
+            onChange={setCurrentTurn}
           />
         )}
         <div className='flex items-center gap-[5px]'>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray transition-colors duration-200'
+            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
             onClick={undoAll}
             disabled={!canUndo(1)}
           >
-            <ChevronDoubleLeft color='var(--color-dark-text)' />
+            <ChevronDoubleLeft className='text-inherit' />
           </button>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray transition-colors duration-200'
+            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
             onClick={() => undo(1)}
             disabled={!canUndo(1)}
           >
-            <ChevronLeft color='var(--color-dark-text)' />
+            <ChevronLeft className='text-inherit' />
           </button>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray transition-colors duration-200'
+            className=' flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
             onClick={() => redo(1)}
             disabled={!canRedo(1)}
           >
-            <ChevronRight color='var(--color-dark-text)' />
+            <ChevronRight className='text-inherit' />
           </button>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray transition-colors duration-200'
+            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
             onClick={redoAll}
             disabled={!canRedo(1)}
           >
-            <ChevronDoubleRight color='var(--color-dark-text)' />
+            <ChevronDoubleRight className='text-inherit' />
           </button>
         </div>
+        <button
+          className='absolute right-[20px] flex items-center justify-center w-[40px] h-[40px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
+          onClick={() => resetEditor()}
+        >
+          <Trash className='text-inherit' />
+        </button>
       </menu>
       <CanvasBoardView
         board={currentBoard}
@@ -124,6 +132,7 @@ function Home() {
         boardStyleConfig={new BasicBoardStyleConfig()}
         handleMove={validateAndPlaceMove}
       />
+      <ToggleFullScreenButton />
     </div>
   );
 }
