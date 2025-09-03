@@ -1,7 +1,7 @@
-import type Board from '@/lib/goKit/core/model/board';
-import Coordinate from '@/lib/goKit/core/model/coordinate';
-import type Move from '@/lib/goKit/core/model/move';
-import Stone from '@/lib/goKit/core/model/stone';
+import type Board from '@/lib/go-kit/core/model/board';
+import Coordinate from '@/lib/go-kit/core/model/coordinate';
+import type Move from '@/lib/go-kit/core/model/move';
+import Stone from '@/lib/go-kit/core/model/stone';
 
 import type { BoardStyleConfig } from '@/go/configs/boardStyleConfig';
 import type { BoardDimension } from '@/go/types/boardDimension';
@@ -23,6 +23,7 @@ export default class CanvasBoardRenderer {
   public initialized: boolean = false;
 
   async init(canvas: HTMLCanvasElement | null, boardSize: number, boardStyleConfig: BoardStyleConfig): Promise<void> {
+    if (this.initialized) return;
     const ctx = canvas?.getContext('2d');
     this.canvas = assertExists(canvas, 'Canvas not available');
     this.ctx = assertExists(ctx, 'Context not available');
@@ -33,13 +34,19 @@ export default class CanvasBoardRenderer {
     this.initialized = true;
   }
 
-  async renderBoard(board: Board): Promise<void> {
+  async renderBoard(board: Board, currentMove: Move | null, showStarPoints: boolean): Promise<void> {
     this.upscaleCanvas();
     // this.paintBoardBackground(ctx, boardStyleConfig, boardSize);
     // await this.paintBoardBackgroundImage(ctx, boardStyleConfig, boardSize);
     this.paintLineGrid(board);
-    this.paintStarPoints(board);
+    if (showStarPoints) {
+      this.paintStarPoints(board);
+    }
     this.paintStones(board);
+
+    if (currentMove) {
+      this.paintCurrentMove(board, currentMove);
+    }
   }
 
   private loadStoneImages(): Promise<void> {
@@ -121,7 +128,7 @@ export default class CanvasBoardRenderer {
     this.ctx.lineWidth = starPointSize;
     this.ctx.fillStyle = this.boardStyleConfig.starPointColor;
     starPoints.forEach((point) => {
-      const [x, y] = BoardMetrics.toCanvasCoords(this.boardSize, board.dimension as BoardDimension, point);
+      const [y, x] = BoardMetrics.toCanvasCoordinate(this.boardSize, board.dimension as BoardDimension, point);
       this.ctx.beginPath();
       this.ctx.arc(x, y, starPointSize / 2, 0, Math.PI * 2); // x, y, 반지름, 시작 각도, 끝 각도
       this.ctx.fill();
@@ -131,19 +138,15 @@ export default class CanvasBoardRenderer {
   private paintStones(board: Board): void {
     const stoneSize = BoardMetrics.stoneSize(this.boardSize, board.dimension as BoardDimension);
 
-    const state = board.getState();
+    const { state } = board;
     state.forEach((row, y) => {
       row.forEach((stone, x) => {
         if (stone !== Stone.EMPTY) {
-          const [canvasY, canvasX] = BoardMetrics.toCanvasCoords(
+          const [canvasY, canvasX] = BoardMetrics.toCanvasCoordinate(
             this.boardSize,
             board.dimension as BoardDimension,
             new Coordinate(y, x),
           );
-          // this.ctx.fillStyle = stone === 'BLACK' ? boardStyleConfig.blackStoneColor : boardStyleConfig.whiteStoneColor;
-          // this.ctx.beginPath();
-          // this.ctx.arc(canvasX, canvasY, stoneSize / 2, 0, Math.PI * 2);
-          // this.ctx.fill();
           const stoneImage = stone === 'BLACK' ? this.blackStoneImage : this.whiteStoneImage;
           this.ctx.drawImage(stoneImage, canvasX - stoneSize / 2, canvasY - stoneSize / 2, stoneSize, stoneSize);
         }
@@ -151,10 +154,29 @@ export default class CanvasBoardRenderer {
     });
   }
 
+  private paintCurrentMove(board: Board, move: Move) {
+    const markSize = BoardMetrics.currentMoveMarkSize(this.boardSize, board.dimension as BoardDimension, move.stone);
+    const [canvasY, canvasX] = BoardMetrics.toCanvasCoordinate(
+      this.boardSize,
+      board.dimension,
+      new Coordinate(move.y, move.x),
+    );
+    this.ctx.fillStyle =
+      move.stone === 'BLACK'
+        ? this.boardStyleConfig.blackCurrentMoveMarkColor
+        : this.boardStyleConfig.whiteCurrentMoveMarkColor;
+    this.ctx.beginPath();
+    this.ctx.moveTo(canvasX, canvasY); // 왼쪽 위 모서리 (꼭짓점)
+    this.ctx.lineTo(canvasX + markSize, canvasY); // 오른쪽으로
+    this.ctx.lineTo(canvasX, canvasY + markSize); // 아래쪽으로
+    this.ctx.closePath();
+    this.ctx.fill();
+  }
+
   private paintStonePreview(move: Move, board: Board): void {
     const { y, x, stone } = move;
     const stoneSize = BoardMetrics.stoneSize(this.boardSize, board.dimension);
-    const [canvasY, canvasX] = BoardMetrics.toCanvasCoords(this.boardSize, board.dimension, new Coordinate(y, x));
+    const [canvasY, canvasX] = BoardMetrics.toCanvasCoordinate(this.boardSize, board.dimension, new Coordinate(y, x));
     this.ctx.fillStyle =
       stone === 'BLACK' ? this.boardStyleConfig.blackStoneColor : this.boardStyleConfig.whiteStoneColor;
     this.ctx.beginPath();

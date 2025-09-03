@@ -1,6 +1,6 @@
-import boardSrc from '@/assets/board.jpg';
-import blackStoneSrc from '@/assets/stone_black.svg';
-import whiteStoneSrc from '@/assets/stone_white.svg';
+import boardSrc from '@/assets/go/board.jpg';
+import blackStoneSrc from '@/assets/go/stone_black.svg';
+import whiteStoneSrc from '@/assets/go/stone_white.svg';
 import type { BoardStyleConfig } from '@/go/configs/boardStyleConfig';
 
 export default class BasicBoardStyleConfig implements BoardStyleConfig {
@@ -16,6 +16,6 @@ export default class BasicBoardStyleConfig implements BoardStyleConfig {
   readonly whiteStoneColor = '#ffffff';
   readonly blackStonePreviewColor = 'rgba(0, 0, 0, 0.3)';
   readonly whiteStonePreviewColor = 'rgba(255, 255, 255, 0.8)';
-  readonly blackCurrentMoveColor = '#ffffff';
-  readonly whiteCurrentMoveColor = '#0000ff';
+  readonly blackCurrentMoveMarkColor = '#ffffff';
+  readonly whiteCurrentMoveMarkColor = '#0000ff';
 }

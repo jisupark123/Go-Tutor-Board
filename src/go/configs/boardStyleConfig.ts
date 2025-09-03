@@ -9,6 +9,6 @@ export interface BoardStyleConfig {
   readonly whiteStoneColor: string; // 백돌 색
   readonly blackStonePreviewColor: string; // 흑돌 미리보기 색
   readonly whiteStonePreviewColor: string; // 백돌 미리보기 색
-  readonly blackCurrentMoveColor: string; // 흑돌 현재 수 색
-  readonly whiteCurrentMoveColor: string; // 백돌 현재 수 색
+  readonly blackCurrentMoveMarkColor: string; // 흑돌 현재 수 색
+  readonly whiteCurrentMoveMarkColor: string; // 백돌 현재 수 색
 }

@@ -1,12 +1,12 @@
-import Board from '@/lib/goKit/core/model/board';
-import Stone from '@/lib/goKit/core/model/stone';
-import BasicMoveValidator from '@/lib/goKit/core/rule/basicMoveValidator';
-import KoMoveValidator from '@/lib/goKit/core/rule/koMoveValidator';
-import RuleBasedMoveProcessor from '@/lib/goKit/core/rule/ruleBasedMoveProcessor';
-import StandardMoveUpdater from '@/lib/goKit/core/rule/standardMoveUpdater';
-import TutorEditor, { type TutorEditorPlaceMode } from '@/lib/goKit/editor/tutorEditor';
-import BasicSequenceHistory from '@/lib/goKit/history/basicSequenceHistory';
-import useTutorEditor from '@/lib/goKit/react/hooks/useTutorEditor';
+import Board from '@/lib/go-kit/core/model/board';
+import Stone from '@/lib/go-kit/core/model/stone';
+import BasicMoveValidator from '@/lib/go-kit/core/rule/basicMoveValidator';
+import KoMoveValidator from '@/lib/go-kit/core/rule/koMoveValidator';
+import RuleBasedMoveProcessor from '@/lib/go-kit/core/rule/ruleBasedMoveProcessor';
+import StandardMoveUpdater from '@/lib/go-kit/core/rule/standardMoveUpdater';
+import TutorEditor, { type TutorEditorPlaceMode } from '@/lib/go-kit/editor/tutorEditor';
+import BasicSequenceHistory from '@/lib/go-kit/history/basicSequenceHistory';
+import useTutorEditor from '@/lib/go-kit/react/hooks/useTutorEditor';
 
 import ChevronLeft from '@/assets/icons/chevron-left.svg?react';
 import ChevronRight from '@/assets/icons/chevron-right.svg?react';
@@ -37,6 +37,7 @@ const editor = new TutorEditor(
 function Home() {
   const {
     currentBoard,
+    currentMove,
     currentTurn,
     placeMode,
     validateAndPlaceMove,
@@ -128,9 +129,10 @@ function Home() {
       </menu>
       <CanvasBoardView
         board={currentBoard}
+        currentMove={currentMove}
         boardSize={boardSize}
         boardStyleConfig={new BasicBoardStyleConfig()}
-        handleMove={validateAndPlaceMove}
+        handleClick={validateAndPlaceMove}
       />
       <ToggleFullScreenButton />
     </div>

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-import type Board from '@/lib/goKit/core/model/board';
-import Coordinate from '@/lib/goKit/core/model/coordinate';
+import type Board from '@/lib/go-kit/core/model/board';
+import Coordinate from '@/lib/go-kit/core/model/coordinate';
+import type Move from '@/lib/go-kit/core/model/move';
 
 import type { BoardStyleConfig } from '@/go/configs/boardStyleConfig';
 import CanvasBoardRenderer from '@/go/renderers/CanvasBoardRenderer';
@@ -11,6 +12,9 @@ type CanvasBoardViewProps = {
   /** 현재 보드 상태 */
   board: Board;
 
+  /** 마지막 수 */
+  currentMove: Move | null;
+
   /** 바둑판 크기 (px 단위) */
   boardSize: number;
 
@@ -18,30 +22,41 @@ type CanvasBoardViewProps = {
   boardStyleConfig: BoardStyleConfig;
 
   /** 바둑판 클릭 이벤트 핸들러 */
-  handleMove: (coord: Coordinate) => void;
+  handleClick: (coord: Coordinate) => void;
+
+  /** 바둑판 우클릭 이벤트 핸들러 */
+  handleContextMenu?: (coord: Coordinate) => void;
 
   /** 비활성화 여부 */
   disabled?: boolean;
+
+  /** 화점 표시 여부 */
+  showStarPoints?: boolean;
 };
 export default function CanvasBoardView({
   board,
+  currentMove,
   boardSize,
   boardStyleConfig,
-  handleMove: onMove,
+  handleClick,
+  handleContextMenu,
   disabled = false,
+  showStarPoints = true,
 }: CanvasBoardViewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasBoardRenderer = useRef<CanvasBoardRenderer>(new CanvasBoardRenderer());
 
   useEffect(() => {
-    canvasBoardRenderer.current.init(canvasRef.current, boardSize, boardStyleConfig);
-  }, [boardStyleConfig, boardSize]);
+    (async () => {
+      await canvasBoardRenderer.current.init(canvasRef.current!, boardSize, boardStyleConfig);
+      // init이 끝난 뒤 board 있으면 바로 렌더링
+      if (canvasBoardRenderer.current.initialized) {
+        canvasBoardRenderer.current.renderBoard(board, currentMove, showStarPoints);
+      }
+    })();
+  }, [boardStyleConfig, boardSize, board, currentMove, showStarPoints]);
 
-  useEffect(() => {
-    canvasBoardRenderer.current.renderBoard(board);
-  }, [board]);
-
-  function onMouseUp(event: React.MouseEvent<HTMLCanvasElement>) {
+  function onClick(event: React.MouseEvent<HTMLCanvasElement>) {
     if (disabled) return;
     if (canvasBoardRenderer.current.initialized === false) {
       console.log('CanvasBoardRenderer is not initialized');
@@ -49,9 +64,22 @@ export default function CanvasBoardView({
     }
     const canvasY = event.nativeEvent.offsetY;
     const canvasX = event.nativeEvent.offsetX;
-    const [y, x] = BoardMetrics.toBoardCoords(canvasY, canvasX, boardSize, board.dimension);
+    const [y, x] = BoardMetrics.toBoardCoordinate(canvasY, canvasX, boardSize, board.dimension);
 
-    onMove(new Coordinate(y, x));
+    handleClick(new Coordinate(y, x));
+  }
+
+  function onContextMenu(event: React.MouseEvent<HTMLCanvasElement>) {
+    event.preventDefault();
+    if (canvasBoardRenderer.current.initialized === false) {
+      console.log('CanvasBoardRenderer is not initialized');
+      return;
+    }
+    const canvasY = event.nativeEvent.offsetY;
+    const canvasX = event.nativeEvent.offsetX;
+    const [y, x] = BoardMetrics.toBoardCoordinate(canvasY, canvasX, boardSize, board.dimension);
+
+    handleContextMenu?.(new Coordinate(y, x));
   }
 
   //   function onMouseMove(event: React.MouseEvent<HTMLCanvasElement>) {
@@ -75,7 +103,8 @@ export default function CanvasBoardView({
         backgroundImage: `url(${boardStyleConfig.bgImageUrl})`,
         backgroundSize: 'cover',
       }}
-      onMouseUp={onMouseUp}
+      onClick={onClick}
+      onContextMenu={onContextMenu}
     />
   );
 }
