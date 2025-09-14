@@ -93,28 +93,28 @@ function Home() {
         )}
         <div className='flex items-center gap-[5px]'>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
+            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
             onClick={undoAll}
             disabled={!canUndo(1)}
           >
             <ChevronDoubleLeft className='text-inherit' />
           </button>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
+            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
             onClick={() => undo(1)}
             disabled={!canUndo(1)}
           >
             <ChevronLeft className='text-inherit' />
           </button>
           <button
-            className=' flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
+            className=' flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
             onClick={() => redo(1)}
             disabled={!canRedo(1)}
           >
             <ChevronRight className='text-inherit' />
           </button>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
+            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
             onClick={redoAll}
             disabled={!canRedo(1)}
           >
@@ -122,7 +122,7 @@ function Home() {
           </button>
         </div>
         <button
-          className='absolute right-[20px] flex items-center justify-center w-[40px] h-[40px] bg-dark-gray rounded-[8px] hover:bg-light-gray text-dark-text transition-colors duration-200'
+          className='absolute right-[20px] flex items-center justify-center w-[40px] h-[40px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
           onClick={() => resetEditor()}
         >
           <Trash className='text-inherit' />
