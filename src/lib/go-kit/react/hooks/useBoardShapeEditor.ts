@@ -2,15 +2,33 @@ import { useCallback, useState } from 'react';
 
 import type Board from '@/lib/go-kit/core/model/board';
 import type Coordinate from '@/lib/go-kit/core/model/coordinate';
-import type Move from '@/lib/go-kit/core/model/move';
-import BoardShapeEditor from '@/lib/go-kit/tools/boardShapeEditor';
+import type Stone from '@/lib/go-kit/core/model/stone';
+import BoardShapeEditor, { type EditMode } from '@/lib/go-kit/tools/boardShapeEditor';
 
 export default function useBoardShapeEditor(initialEditor: BoardShapeEditor) {
   const [editor, setEditor] = useState(initialEditor);
 
-  const addStone = useCallback(
-    (move: Move): BoardShapeEditor | null => {
-      const nextEditor = editor.addStone(move);
+  const setEditMode = useCallback(
+    (mode: EditMode) => {
+      const nextEditor = editor.setEditMode(mode);
+      setEditor(nextEditor);
+      return nextEditor;
+    },
+    [editor],
+  );
+
+  const setStoneToPlace = useCallback(
+    (stone: Stone) => {
+      const nextEditor = editor.setStoneToPlace(stone);
+      setEditor(nextEditor);
+      return nextEditor;
+    },
+    [editor],
+  );
+
+  const leftClick = useCallback(
+    (coordinate: Coordinate): BoardShapeEditor | null => {
+      const nextEditor = editor.leftClick(coordinate);
       if (nextEditor) {
         setEditor(nextEditor);
       }
@@ -19,9 +37,9 @@ export default function useBoardShapeEditor(initialEditor: BoardShapeEditor) {
     [editor],
   );
 
-  const removeStone = useCallback(
+  const rightClick = useCallback(
     (coordinate: Coordinate): BoardShapeEditor => {
-      const nextEditor = editor.removeStone(coordinate);
+      const nextEditor = editor.rightClick(coordinate);
       setEditor(nextEditor);
       return nextEditor;
     },
@@ -29,8 +47,8 @@ export default function useBoardShapeEditor(initialEditor: BoardShapeEditor) {
   );
 
   const reset = useCallback(
-    (board: Board): BoardShapeEditor => {
-      const nextEditor = editor.copy({ board });
+    (initialBoard: Board) => {
+      const nextEditor = editor.reset(initialBoard);
       setEditor(nextEditor);
       return nextEditor;
     },
@@ -39,8 +57,12 @@ export default function useBoardShapeEditor(initialEditor: BoardShapeEditor) {
 
   return {
     board: editor.board,
-    addStone,
-    removeStone,
+    editMode: editor.editMode,
+    stoneToPlace: editor.stoneToPlace,
+    setEditMode,
+    setStoneToPlace,
+    leftClick,
+    rightClick,
     reset,
   };
 }

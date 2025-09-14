@@ -54,7 +54,7 @@ class PlaceModeSequenceEditor implements DataObject<PlaceModeSequenceEditor, Pla
     return this.copy({ currentTurn: turn });
   }
 
-  validateAndPlaceMove(coordinate: Coordinate): PlaceModeSequenceEditor | null {
+  private validateAndPlaceMove(coordinate: Coordinate): PlaceModeSequenceEditor | null {
     const { y, x } = coordinate;
     const move = new Move(y, x, this.currentTurn);
     const newBoard = this.moveProcessor.validateMoveAndUpdate(
@@ -89,6 +89,10 @@ class PlaceModeSequenceEditor implements DataObject<PlaceModeSequenceEditor, Pla
     return this.copy({ placeMode: mode, currentTurn: nextCurrentTurn });
   }
 
+  leftClick(coordinate: Coordinate): PlaceModeSequenceEditor | null {
+    return this.validateAndPlaceMove(coordinate);
+  }
+
   undo(steps: number): PlaceModeSequenceEditor {
     return this.copy({ sequenceHistory: this.sequenceHistory.undo(steps) }).updateTurnByRedoHistory();
   }
@@ -102,7 +106,7 @@ class PlaceModeSequenceEditor implements DataObject<PlaceModeSequenceEditor, Pla
   }
 
   redoAll(): PlaceModeSequenceEditor {
-    return this.copy({ sequenceHistory: this.sequenceHistory.redoAll() });
+    return this.copy({ sequenceHistory: this.sequenceHistory.redoAll() }).updateTurnByRedoHistory();
   }
 
   canUndo(steps: number): boolean {

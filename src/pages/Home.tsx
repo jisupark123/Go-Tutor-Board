@@ -41,7 +41,7 @@ function Home() {
     currentMove,
     currentTurn,
     placeMode,
-    validateAndPlaceMove,
+    leftClick,
     setPlaceMode,
     setCurrentTurn,
     undo,
@@ -133,7 +133,7 @@ function Home() {
         currentMove={currentMove}
         boardSize={boardSize}
         boardStyleConfig={new BasicBoardStyleConfig()}
-        handleClick={validateAndPlaceMove}
+        handleClick={leftClick}
       />
       <ToggleFullScreenButton />
     </div>

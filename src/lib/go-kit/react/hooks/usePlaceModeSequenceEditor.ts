@@ -8,9 +8,9 @@ import PlaceModeSequenceEditor, { type PlaceMode } from '@/lib/go-kit/tools/plac
 export default function usePlaceModeSequenceEditor(placeModeSequenceEditor: PlaceModeSequenceEditor) {
   const [editor, setEditor] = useState(placeModeSequenceEditor);
 
-  const validateAndPlaceMove = useCallback(
+  const leftClick = useCallback(
     (coordinate: Coordinate): PlaceModeSequenceEditor | null => {
-      const nextEditor = editor.validateAndPlaceMove(coordinate);
+      const nextEditor = editor.leftClick(coordinate);
       if (nextEditor) {
         setEditor(nextEditor);
       }
@@ -80,7 +80,7 @@ export default function usePlaceModeSequenceEditor(placeModeSequenceEditor: Plac
     currentMove: editor.currentMove,
     currentTurn: editor.currentTurn,
     placeMode: editor.placeMode,
-    validateAndPlaceMove,
+    leftClick,
     setPlaceMode,
     setCurrentTurn,
     undo,
