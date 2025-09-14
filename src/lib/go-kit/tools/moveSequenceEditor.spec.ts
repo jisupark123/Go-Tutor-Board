@@ -8,9 +8,9 @@ import BasicMoveValidator from '@/lib/go-kit/core/rule/basicMoveValidator';
 import type { MoveProcessor } from '@/lib/go-kit/core/rule/moveProcessor';
 import RuleBasedMoveProcessor from '@/lib/go-kit/core/rule/ruleBasedMoveProcessor';
 import StandardMoveUpdater from '@/lib/go-kit/core/rule/standardMoveUpdater';
-import MoveSequenceEditor from '@/lib/go-kit/editor/moveSequenceEditor';
 import BasicSequenceHistory from '@/lib/go-kit/history/basicSequenceHistory';
 import type { SequenceHistory } from '@/lib/go-kit/history/sequenceHistory';
+import MoveSequenceEditor from '@/lib/go-kit/tools/moveSequenceEditor';
 
 describe('MoveSequenceEditor', () => {
   let initBoard: Board;

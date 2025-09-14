@@ -4,7 +4,7 @@ import Board from '@/lib/go-kit/core/model/board';
 import Coordinate from '@/lib/go-kit/core/model/coordinate';
 import Move from '@/lib/go-kit/core/model/move';
 import Stone from '@/lib/go-kit/core/model/stone';
-import BoardShapeEditor from '@/lib/go-kit/editor/boardShapeEditor';
+import BoardShapeEditor from '@/lib/go-kit/tools/boardShapeEditor';
 
 describe('BoardShapeEditorTest', () => {
   let initBoard: Board;

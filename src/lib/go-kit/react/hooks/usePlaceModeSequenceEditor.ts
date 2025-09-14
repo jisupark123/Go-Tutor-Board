@@ -3,13 +3,13 @@ import { useCallback, useState } from 'react';
 import Board from '@/lib/go-kit/core/model/board';
 import type Coordinate from '@/lib/go-kit/core/model/coordinate';
 import type Stone from '@/lib/go-kit/core/model/stone';
-import TutorEditor, { type TutorEditorPlaceMode } from '@/lib/go-kit/editor/tutorEditor';
+import PlaceModeSequenceEditor, { type PlaceMode } from '@/lib/go-kit/tools/placeModeSequenceEditor';
 
-export default function useTutorEditor(tutorEditor: TutorEditor) {
-  const [editor, setEditor] = useState(tutorEditor);
+export default function usePlaceModeSequenceEditor(placeModeSequenceEditor: PlaceModeSequenceEditor) {
+  const [editor, setEditor] = useState(placeModeSequenceEditor);
 
   const validateAndPlaceMove = useCallback(
-    (coordinate: Coordinate): TutorEditor | null => {
+    (coordinate: Coordinate): PlaceModeSequenceEditor | null => {
       const nextEditor = editor.validateAndPlaceMove(coordinate);
       if (nextEditor) {
         setEditor(nextEditor);
@@ -20,7 +20,7 @@ export default function useTutorEditor(tutorEditor: TutorEditor) {
   );
 
   const setCurrentTurn = useCallback(
-    (turn: Stone): TutorEditor => {
+    (turn: Stone): PlaceModeSequenceEditor => {
       const nextEditor = editor.setCurrentTurn(turn);
       setEditor(nextEditor);
       return nextEditor;
@@ -29,7 +29,7 @@ export default function useTutorEditor(tutorEditor: TutorEditor) {
   );
 
   const setPlaceMode = useCallback(
-    (mode: TutorEditorPlaceMode): TutorEditor => {
+    (mode: PlaceMode): PlaceModeSequenceEditor => {
       const nextEditor = editor.setPlaceMode(mode);
       setEditor(nextEditor);
       return nextEditor;
@@ -38,7 +38,7 @@ export default function useTutorEditor(tutorEditor: TutorEditor) {
   );
 
   const undo = useCallback(
-    (steps: number): TutorEditor => {
+    (steps: number): PlaceModeSequenceEditor => {
       const nextEditor = editor.undo(steps);
       setEditor(nextEditor);
       return nextEditor;
@@ -47,7 +47,7 @@ export default function useTutorEditor(tutorEditor: TutorEditor) {
   );
 
   const redo = useCallback(
-    (steps: number): TutorEditor => {
+    (steps: number): PlaceModeSequenceEditor => {
       const nextEditor = editor.redo(steps);
       setEditor(nextEditor);
       return nextEditor;
@@ -55,13 +55,13 @@ export default function useTutorEditor(tutorEditor: TutorEditor) {
     [editor],
   );
 
-  const undoAll = useCallback((): TutorEditor => {
+  const undoAll = useCallback((): PlaceModeSequenceEditor => {
     const nextEditor = editor.undoAll();
     setEditor(nextEditor);
     return nextEditor;
   }, [editor]);
 
-  const redoAll = useCallback((): TutorEditor => {
+  const redoAll = useCallback((): PlaceModeSequenceEditor => {
     const nextEditor = editor.redoAll();
     setEditor(nextEditor);
     return nextEditor;

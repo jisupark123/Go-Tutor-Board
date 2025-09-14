@@ -4,9 +4,10 @@ import BasicMoveValidator from '@/lib/go-kit/core/rule/basicMoveValidator';
 import KoMoveValidator from '@/lib/go-kit/core/rule/koMoveValidator';
 import RuleBasedMoveProcessor from '@/lib/go-kit/core/rule/ruleBasedMoveProcessor';
 import StandardMoveUpdater from '@/lib/go-kit/core/rule/standardMoveUpdater';
-import TutorEditor, { type TutorEditorPlaceMode } from '@/lib/go-kit/editor/tutorEditor';
 import BasicSequenceHistory from '@/lib/go-kit/history/basicSequenceHistory';
-import useTutorEditor from '@/lib/go-kit/react/hooks/useTutorEditor';
+import usePlaceModeSequenceEditor from '@/lib/go-kit/react/hooks/usePlaceModeSequenceEditor';
+import type { PlaceMode } from '@/lib/go-kit/tools/placeModeSequenceEditor';
+import PlaceModeSequenceEditor from '@/lib/go-kit/tools/placeModeSequenceEditor';
 
 import ChevronLeft from '@/assets/icons/chevron-left.svg?react';
 import ChevronRight from '@/assets/icons/chevron-right.svg?react';
@@ -18,7 +19,7 @@ import ToggleFullScreenButton from '@/global/components/ToggleFullScreenButton';
 import CanvasBoardView from '@/go/components/CanvasBoardView';
 import BasicBoardStyleConfig from '@/go/configs/basicBoardStyleConfig';
 
-const placeModeOptions: { label: string; value: TutorEditorPlaceMode }[] = [
+const placeModeOptions: { label: string; value: PlaceMode }[] = [
   { label: '흑돌만', value: 'ONLY_BLACK' },
   { label: '백돌만', value: 'ONLY_WHITE' },
   { label: '한수씩', value: 'ALTERNATE' },
@@ -29,7 +30,7 @@ const currentTurnOptions: { label: string; value: Stone }[] = [
   { label: '백 차례', value: Stone.WHITE },
 ];
 
-const editor = new TutorEditor(
+const editor = new PlaceModeSequenceEditor(
   new BasicSequenceHistory(new Board(13)),
   new RuleBasedMoveProcessor([new BasicMoveValidator(), new KoMoveValidator()], new StandardMoveUpdater()),
 );
@@ -50,7 +51,7 @@ function Home() {
     canUndo,
     canRedo,
     reset: resetEditor,
-  } = useTutorEditor(editor);
+  } = usePlaceModeSequenceEditor(editor);
   const { dimension: boardDimension } = currentBoard;
   const boardSize = 650; // px 단위
 

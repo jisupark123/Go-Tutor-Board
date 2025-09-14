@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import type Coordinate from '@/lib/go-kit/core/model/coordinate';
-import MoveSequenceEditor from '@/lib/go-kit/editor/moveSequenceEditor';
+import MoveSequenceEditor from '@/lib/go-kit/tools/moveSequenceEditor';
 
 export default function useMoveSequenceEditor(moveSequenceEditor: MoveSequenceEditor) {
   const [editor, setEditor] = useState(moveSequenceEditor);

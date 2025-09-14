@@ -6,25 +6,25 @@ import Stone, { oppositeStone } from '@/lib/go-kit/core/model/stone';
 import type { MoveProcessor } from '@/lib/go-kit/core/rule/moveProcessor';
 import type { SequenceHistory } from '@/lib/go-kit/history/sequenceHistory';
 
-export type TutorEditorPlaceMode = 'ONLY_BLACK' | 'ONLY_WHITE' | 'ALTERNATE';
+export type PlaceMode = 'ONLY_BLACK' | 'ONLY_WHITE' | 'ALTERNATE';
 
-type TutorEditorProps = {
+type PlaceModeSequenceEditorProps = {
   sequenceHistory: SequenceHistory;
   moveProcessor: MoveProcessor;
-  placeMode: TutorEditorPlaceMode;
+  placeMode: PlaceMode;
   currentTurn: Stone;
 };
 
-class TutorEditor implements DataObject<TutorEditor, TutorEditorProps> {
+class PlaceModeSequenceEditor implements DataObject<PlaceModeSequenceEditor, PlaceModeSequenceEditorProps> {
   private readonly sequenceHistory: SequenceHistory;
   private readonly moveProcessor: MoveProcessor;
   readonly currentTurn: Stone = Stone.BLACK;
-  readonly placeMode: TutorEditorPlaceMode;
+  readonly placeMode: PlaceMode;
 
   constructor(
     sequenceHistory: SequenceHistory,
     moveProcessor: MoveProcessor,
-    placeMode: TutorEditorPlaceMode = 'ONLY_BLACK',
+    placeMode: PlaceMode = 'ONLY_BLACK',
     currentTurn: Stone = Stone.BLACK,
   ) {
     this.sequenceHistory = sequenceHistory;
@@ -41,20 +41,20 @@ class TutorEditor implements DataObject<TutorEditor, TutorEditorProps> {
     return this.sequenceHistory.currentMove;
   }
 
-  // // undo, redo 시 해당 시점으로 currentTurn 자동 업데이트
-  private updateTurnByRedoHistory(): TutorEditor {
-    if (!this.canRedo(1)) return this;
+  // undo, redo 시 해당 시점으로 currentTurn 자동 업데이트
+  private updateTurnByRedoHistory(): PlaceModeSequenceEditor {
+    if (!this.canRedo(1)) return this.updateTurnByPlaceMode();
 
     const turn = this.sequenceHistory.redo(1).currentMove!.stone;
     return this.copy({ currentTurn: turn });
   }
 
-  private updateTurnByPlaceMode(): TutorEditor {
+  private updateTurnByPlaceMode(): PlaceModeSequenceEditor {
     const turn = this.placeMode === 'ALTERNATE' ? oppositeStone(this.currentTurn) : this.currentTurn;
     return this.copy({ currentTurn: turn });
   }
 
-  validateAndPlaceMove(coordinate: Coordinate): TutorEditor | null {
+  validateAndPlaceMove(coordinate: Coordinate): PlaceModeSequenceEditor | null {
     const { y, x } = coordinate;
     const move = new Move(y, x, this.currentTurn);
     const newBoard = this.moveProcessor.validateMoveAndUpdate(
@@ -67,31 +67,41 @@ class TutorEditor implements DataObject<TutorEditor, TutorEditorProps> {
     return this.copy({ sequenceHistory: this.sequenceHistory.record(newBoard, move) }).updateTurnByPlaceMode();
   }
 
-  setCurrentTurn(turn: Stone): TutorEditor {
+  setCurrentTurn(turn: Stone): PlaceModeSequenceEditor {
     if (turn === Stone.EMPTY) throw new Error('Invalid turn');
     return this.copy({ currentTurn: turn });
   }
 
-  setPlaceMode(mode: TutorEditorPlaceMode): TutorEditor {
-    const nextCurrentTurn = mode === 'ONLY_WHITE' ? Stone.WHITE : Stone.BLACK;
+  setPlaceMode(mode: PlaceMode): PlaceModeSequenceEditor {
+    let nextCurrentTurn: Stone;
+
+    switch (mode) {
+      case 'ONLY_BLACK':
+        nextCurrentTurn = Stone.BLACK;
+        break;
+      case 'ONLY_WHITE':
+        nextCurrentTurn = Stone.WHITE;
+        break;
+      case 'ALTERNATE':
+        nextCurrentTurn = Stone.BLACK;
+        break;
+    }
     return this.copy({ placeMode: mode, currentTurn: nextCurrentTurn });
   }
 
-  undo(steps: number): TutorEditor {
+  undo(steps: number): PlaceModeSequenceEditor {
     return this.copy({ sequenceHistory: this.sequenceHistory.undo(steps) }).updateTurnByRedoHistory();
-    // this._currentTurn = this.sequenceHistory.moveHistory[]
-    // TODO: currentTurn 복구
   }
 
-  redo(steps: number): TutorEditor {
+  redo(steps: number): PlaceModeSequenceEditor {
     return this.copy({ sequenceHistory: this.sequenceHistory.redo(steps) }).updateTurnByRedoHistory();
   }
 
-  undoAll(): TutorEditor {
+  undoAll(): PlaceModeSequenceEditor {
     return this.copy({ sequenceHistory: this.sequenceHistory.undoAll() }).updateTurnByRedoHistory();
   }
 
-  redoAll(): TutorEditor {
+  redoAll(): PlaceModeSequenceEditor {
     return this.copy({ sequenceHistory: this.sequenceHistory.redoAll() });
   }
 
@@ -103,7 +113,7 @@ class TutorEditor implements DataObject<TutorEditor, TutorEditorProps> {
     return this.sequenceHistory.canRedo(steps);
   }
 
-  reset(initialBoard: Board): TutorEditor {
+  reset(initialBoard?: Board): PlaceModeSequenceEditor {
     return this.copy({
       sequenceHistory: this.sequenceHistory.reset(initialBoard),
       currentTurn: Stone.BLACK,
@@ -118,8 +128,8 @@ class TutorEditor implements DataObject<TutorEditor, TutorEditorProps> {
     return false; // TODO: Implement proper equality check
   }
 
-  copy(props?: Partial<TutorEditorProps> | undefined): TutorEditor {
-    return new TutorEditor(
+  copy(props?: Partial<PlaceModeSequenceEditorProps> | undefined): PlaceModeSequenceEditor {
+    return new PlaceModeSequenceEditor(
       props?.sequenceHistory ?? this.sequenceHistory,
       props?.moveProcessor ?? this.moveProcessor,
       props?.placeMode ?? this.placeMode,
@@ -128,11 +138,11 @@ class TutorEditor implements DataObject<TutorEditor, TutorEditorProps> {
   }
 
   toString(): string {
-    return `TutorEditor {
+    return `PlaceModeSequenceEditor {
         currentTurn: ${this.currentTurn},
         placeMode: ${this.placeMode}
       }`;
   }
 }
 
-export default TutorEditor;
+export default PlaceModeSequenceEditor;

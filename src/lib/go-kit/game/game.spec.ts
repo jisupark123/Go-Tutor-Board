@@ -30,7 +30,7 @@ xoxx+
     initBoard = BoardUtils.asciiToBoard(b1);
     sequenceHistory = new BasicSequenceHistory(initBoard);
     moveProcessor = new RuleBasedMoveProcessor([new BasicMoveValidator()], new StandardMoveUpdater());
-    game = new Game(sequenceHistory, moveProcessor);
+    game = new Game(sequenceHistory);
   });
 
   // 초기화가 올바르게 설정되는지 확인
@@ -46,7 +46,7 @@ xoxx+
 
   // playMove는 현재 차례에 맞게 착수하고 값들을 올바르게 업데이트한다.
   it('playMove places move and updates states correctly', () => {
-    const newGame = game.playMove(new Coordinate(2, 0));
+    const newGame = game.playMove(new Coordinate(2, 0), moveProcessor);
 
     expect(newGame).not.toBeNull();
     expect(newGame?.currentTurn).toBe(Stone.WHITE); // 다음 차례는 WHITE
@@ -56,21 +56,21 @@ xoxx+
 
   // playMove는 착수가 바둑판 범위를 벗어나면 에러를 발생시킨다.
   it('playMove throws IllegalArgumentException for out of bounds move', () => {
-    expect(() => game.playMove(new Coordinate(-1, 0))).toThrowError();
-    expect(() => game.playMove(new Coordinate(0, -1))).toThrowError();
-    expect(() => game.playMove(new Coordinate(5, 0))).toThrowError();
-    expect(() => game.playMove(new Coordinate(0, 5))).toThrowError();
+    expect(() => game.playMove(new Coordinate(-1, 0), moveProcessor)).toThrowError();
+    expect(() => game.playMove(new Coordinate(0, -1), moveProcessor)).toThrowError();
+    expect(() => game.playMove(new Coordinate(5, 0), moveProcessor)).toThrowError();
+    expect(() => game.playMove(new Coordinate(0, 5), moveProcessor)).toThrowError();
   });
 
   // playMove는 이미 돌이 있는 곳에 착수하려고 하면 null을 반환한다.
   it('playMove returns null for invalid move', () => {
-    const newGame = game.playMove(new Coordinate(0, 0)); // 이미 돌이 있는 곳에 착수 시도
+    const newGame = game.playMove(new Coordinate(0, 0), moveProcessor); // 이미 돌이 있는 곳에 착수 시도
     expect(newGame).toBeNull(); // null 반환
   });
 
   // playMove는 잡은 돌의 개수를 올바르게 업데이트한다.
   it('playMove updates captured stones correctly', () => {
-    const newGame = game.playMove(new Coordinate(2, 2)); // 흑이 백 돌을 잡는 착수
+    const newGame = game.playMove(new Coordinate(2, 2), moveProcessor); // 흑이 백 돌을 잡는 착수
     expect(newGame?.capturedByBlack).toBe(8); // 흑이 잡은 돌 개수 업데이트
   });
 });

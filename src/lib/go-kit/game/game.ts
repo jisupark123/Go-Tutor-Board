@@ -8,7 +8,6 @@ import type { SequenceHistory } from '@/lib/go-kit/history/sequenceHistory';
 
 type GameProps = {
   sequenceHistory: SequenceHistory;
-  moveProcessor: MoveProcessor;
   initialTurn: Stone;
   komi: number;
   capturedByBlack: number;
@@ -17,7 +16,6 @@ type GameProps = {
 
 class Game implements DataObject<Game, GameProps> {
   private readonly sequenceHistory: SequenceHistory;
-  private readonly moveProcessor: MoveProcessor;
   readonly initialTurn: Stone;
   readonly komi: number;
   readonly capturedByBlack: number;
@@ -25,14 +23,12 @@ class Game implements DataObject<Game, GameProps> {
 
   constructor(
     sequenceHistory: SequenceHistory,
-    moveProcessor: MoveProcessor,
     initialTurn: Stone = Stone.BLACK,
     komi: number = 6.5,
     capturedByBlack: number = 0,
     capturedByWhite: number = 0,
   ) {
     this.sequenceHistory = sequenceHistory;
-    this.moveProcessor = moveProcessor;
     this.initialTurn = initialTurn;
     this.komi = komi;
     this.capturedByBlack = capturedByBlack;
@@ -67,13 +63,17 @@ class Game implements DataObject<Game, GameProps> {
     return this.sequenceHistory.currentMove ? oppositeStone(this.sequenceHistory.currentMove.stone) : this.initialTurn;
   }
 
-  playMove(coordinate: Coordinate): Game | null {
+  get totalMovesCount(): number {
+    return this.moveHistory.length;
+  }
+
+  playMove(coordinate: Coordinate, moveProcessor: MoveProcessor): Game | null {
     const { y, x } = coordinate;
     const move = new Move(y, x, this.currentTurn);
     const oldBoard = this.sequenceHistory.currentBoard;
 
     // 착수 유효성 검사 및 보드 업데이트
-    const newBoard = this.moveProcessor.validateMoveAndUpdate(oldBoard, move, this.sequenceHistory.boardHistory);
+    const newBoard = moveProcessor.validateMoveAndUpdate(oldBoard, move, this.sequenceHistory.boardHistory);
     if (!newBoard) return null;
 
     const newHistory = this.sequenceHistory.record(newBoard, move);
@@ -125,7 +125,6 @@ class Game implements DataObject<Game, GameProps> {
   copy(props?: Partial<GameProps> | undefined): Game {
     return new Game(
       props?.sequenceHistory ?? this.sequenceHistory,
-      props?.moveProcessor ?? this.moveProcessor,
       props?.initialTurn ?? this.initialTurn,
       props?.komi ?? this.komi,
       props?.capturedByBlack ?? this.capturedByBlack,
@@ -136,7 +135,6 @@ class Game implements DataObject<Game, GameProps> {
   toString(): string {
     return `Game {
         sequenceHistory: ${this.sequenceHistory},
-        moveProcessor: ${this.moveProcessor},
         initialTurn: ${this.initialTurn},
         komi: ${this.komi},
         capturedByBlack: ${this.capturedByBlack},
