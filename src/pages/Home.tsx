@@ -14,18 +14,18 @@ import ChevronRight from '@/assets/icons/chevron-right.svg?react';
 import ChevronDoubleLeft from '@/assets/icons/chevrons-left.svg?react';
 import ChevronDoubleRight from '@/assets/icons/chevrons-right.svg?react';
 import Trash from '@/assets/icons/trash.svg?react';
-import ToggleButtonGroup from '@/global/components/ToggleButtonGroup';
+import ToggleButtonGroup, { type ToggleButtonGroupOption } from '@/global/components/ToggleButtonGroup';
 import ToggleFullScreenButton from '@/global/components/ToggleFullScreenButton';
 import CanvasBoardView from '@/go/components/CanvasBoardView';
 import BasicBoardStyleConfig from '@/go/configs/basicBoardStyleConfig';
 
-const placeModeOptions: { label: string; value: PlaceMode }[] = [
+const placeModeOptions: ToggleButtonGroupOption<PlaceMode>[] = [
   { label: '흑돌만', value: 'ONLY_BLACK' },
   { label: '백돌만', value: 'ONLY_WHITE' },
   { label: '한수씩', value: 'ALTERNATE' },
 ];
 
-const currentTurnOptions: { label: string; value: Stone }[] = [
+const currentTurnOptions: ToggleButtonGroupOption<Stone>[] = [
   { label: '흑 차례', value: Stone.BLACK },
   { label: '백 차례', value: Stone.WHITE },
 ];
@@ -77,19 +77,9 @@ function Home() {
         >
           {boardDimension}
         </button>
-        <ToggleButtonGroup
-          options={placeModeOptions}
-          defaultValue={placeMode}
-          value={placeMode}
-          onChange={setPlaceMode}
-        />
+        <ToggleButtonGroup options={placeModeOptions} value={placeMode} onChange={setPlaceMode} />
         {placeMode === 'ALTERNATE' && (
-          <ToggleButtonGroup
-            options={currentTurnOptions}
-            defaultValue={currentTurn}
-            value={currentTurn}
-            onChange={setCurrentTurn}
-          />
+          <ToggleButtonGroup options={currentTurnOptions} value={currentTurn} onChange={setCurrentTurn} />
         )}
         <div className='flex items-center gap-[5px]'>
           <button

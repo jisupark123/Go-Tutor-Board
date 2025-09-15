@@ -1,23 +1,16 @@
+export type ToggleButtonGroupOption<T extends string> = {
+  label: string;
+  value: T;
+};
+
 interface ToggleButtonGroupProps<T extends string> {
-  options: {
-    label: string;
-    value: T;
-  }[];
-  defaultValue: T;
+  options: ToggleButtonGroupOption<T>[];
   value: T;
   onChange?: (value: T) => void;
 }
 
-export default function ToggleButtonGroup<T extends string>({
-  options,
-  // defaultValue,
-  value,
-  onChange,
-}: ToggleButtonGroupProps<T>) {
-  // const [selected, setSelected] = useState(defaultValue);
-
+export default function ToggleButtonGroup<T extends string>({ options, value, onChange }: ToggleButtonGroupProps<T>) {
   const handleClick = (value: T) => {
-    // setSelected(value);
     onChange?.(value);
   };
 
