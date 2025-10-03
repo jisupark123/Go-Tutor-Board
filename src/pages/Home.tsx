@@ -56,12 +56,14 @@ function Home() {
   const boardSize = 650; // px 단위
 
   function handleBoardDimensionButtonClick() {
-    if (boardDimension === 9) {
+    if (boardDimension === 7) {
+      resetEditor(new Board(9));
+    } else if (boardDimension === 9) {
       resetEditor(new Board(13));
     } else if (boardDimension === 13) {
       resetEditor(new Board(19));
     } else {
-      resetEditor(new Board(9));
+      resetEditor(new Board(7));
     }
   }
 
