@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import {
   BasicSequenceManager,
   Board,
@@ -12,7 +12,6 @@ import {
   type StoneColor,
 } from '@dodagames/go';
 
-import boardImgUrl from '@/assets/go/board.jpg';
 import ChevronLeft from '@/assets/icons/chevron-left.svg?react';
 import ChevronRight from '@/assets/icons/chevron-right.svg?react';
 import ChevronDoubleLeft from '@/assets/icons/chevrons-left.svg?react';
@@ -20,7 +19,6 @@ import ChevronDoubleRight from '@/assets/icons/chevrons-right.svg?react';
 import Trash from '@/assets/icons/trash.svg?react';
 import ToggleButtonGroup, { type ToggleButtonGroupOption } from '@/global/components/ToggleButtonGroup';
 import ToggleFullScreenButton from '@/global/components/ToggleFullScreenButton';
-import saveCanvasAsPng from '@/utils/saveCanvasAsPng';
 
 const placeModeOptions: ToggleButtonGroupOption<PlaceModeSequenceHistoryEditorPlaceMode>[] = [
   { label: '흑돌만', value: 'ONLY_BLACK' },
@@ -72,21 +70,21 @@ function Home() {
     }
   }
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isMac = navigator.platform.toUpperCase().includes('MAC');
-      const savePressed = isMac ? e.metaKey && e.key === 's' : e.ctrlKey && e.key === 's';
-      if (savePressed) {
-        e.preventDefault(); // 기본 브라우저 저장 단축키 방지
-        if (canvasRef.current) {
-          saveCanvasAsPng(canvasRef.current, boardImgUrl, 'board.png');
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const handleKeyDown = (e: KeyboardEvent) => {
+  //     const isMac = navigator.platform.toUpperCase().includes('MAC');
+  //     const savePressed = isMac ? e.metaKey && e.key === 's' : e.ctrlKey && e.key === 's';
+  //     if (savePressed) {
+  //       e.preventDefault(); // 기본 브라우저 저장 단축키 방지
+  //       if (canvasRef.current) {
+  //         saveCanvasAsPng(canvasRef.current, boardImgUrl, 'board.png');
+  //       }
+  //     }
+  //   };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  //   window.addEventListener('keydown', handleKeyDown);
+  //   return () => window.removeEventListener('keydown', handleKeyDown);
+  // }, []);
 
   return (
     <div className='bg-bg flex h-[100vh] w-[100vw] flex-col items-center justify-center gap-[20px]'>
