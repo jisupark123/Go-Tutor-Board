@@ -24,7 +24,7 @@ class PlaceModeSequenceEditor implements DataObject<PlaceModeSequenceEditor, Pla
   constructor(
     sequenceHistory: SequenceHistory,
     moveProcessor: MoveProcessor,
-    placeMode: PlaceMode = 'ONLY_BLACK',
+    placeMode: PlaceMode = 'ALTERNATE',
     currentTurn: Stone = Stone.BLACK,
   ) {
     this.sequenceHistory = sequenceHistory;

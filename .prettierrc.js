@@ -1,4 +1,6 @@
+/** @type {import('prettier').Config & import('prettier-plugin-tailwindcss').PluginOptions} */
 export default {
+  plugins: ['prettier-plugin-tailwindcss'],
   arrowParens: 'always', // always - (x) => x | avoid - x => x
   bracketSpacing: true, // 객체 리터럴에서 괄호에 공백 삽입 여부
   bracketSameLine: false, // JSX의 마지막 `>`를 다음 줄로 내릴지 여부

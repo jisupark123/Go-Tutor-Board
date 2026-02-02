@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "test": "vitest",
-    "postinstall": "husky",
     "lint-staged": "lint-staged",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+    "lint": "eslint . --fix",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "test": "vitest",
+    "preview": "vite preview",
+    "check:all": "concurrently -g --kill-others-on-fail --prefix '[{name}]' --names 'LINT,TYPE,TEST' --prefix-colors 'blue,green,magenta' \"pnpm lint\" \"pnpm typecheck\" \"pnpm test\"",
+    "postinstall": "husky"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": "eslint"
@@ -21,6 +22,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.8.2",
+    "tailwind-merge": "^3.4.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
@@ -29,8 +31,10 @@
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react-swc": "^4.0.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-better-tailwindcss": "^4.0.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
@@ -40,6 +44,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.1.12",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
@@ -47,5 +52,6 @@
     "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
-  }
+  },
+  "packageManager": "pnpm@10.18.1+sha512.77a884a165cbba2d8d1c19e3b4880eee6d2fcabd0d879121e282196b80042351d5eb3ca0935fa599da1dc51265cc68816ad2bddd2a2de5ea9fdf92adbec7cd34"
 }

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 import Board from '@/lib/go-kit/core/model/board';
 import Stone from '@/lib/go-kit/core/model/stone';
 import BasicMoveValidator from '@/lib/go-kit/core/rule/basicMoveValidator';
@@ -9,6 +11,7 @@ import usePlaceModeSequenceEditor from '@/lib/go-kit/react/hooks/usePlaceModeSeq
 import type { PlaceMode } from '@/lib/go-kit/tools/placeModeSequenceEditor';
 import PlaceModeSequenceEditor from '@/lib/go-kit/tools/placeModeSequenceEditor';
 
+import boardImgUrl from '@/assets/go/board.jpg';
 import ChevronLeft from '@/assets/icons/chevron-left.svg?react';
 import ChevronRight from '@/assets/icons/chevron-right.svg?react';
 import ChevronDoubleLeft from '@/assets/icons/chevrons-left.svg?react';
@@ -18,6 +21,7 @@ import ToggleButtonGroup, { type ToggleButtonGroupOption } from '@/global/compon
 import ToggleFullScreenButton from '@/global/components/ToggleFullScreenButton';
 import CanvasBoardView from '@/go/components/CanvasBoardView';
 import BasicBoardStyleConfig from '@/go/configs/basicBoardStyleConfig';
+import saveCanvasAsPng from '@/go/utils/saveCanvasAsPng';
 
 const placeModeOptions: ToggleButtonGroupOption<PlaceMode>[] = [
   { label: '흑돌만', value: 'ONLY_BLACK' },
@@ -36,6 +40,7 @@ const editor = new PlaceModeSequenceEditor(
 );
 
 function Home() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const {
     currentBoard,
     currentMove,
@@ -67,14 +72,27 @@ function Home() {
     }
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isMac = navigator.platform.toUpperCase().includes('MAC');
+      const savePressed = isMac ? e.metaKey && e.key === 's' : e.ctrlKey && e.key === 's';
+      if (savePressed) {
+        e.preventDefault(); // 기본 브라우저 저장 단축키 방지
+        if (canvasRef.current) {
+          saveCanvasAsPng(canvasRef.current, boardImgUrl, 'board.png');
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
-    <div className='w-[100vw] h-[100vh] flex flex-col justify-center items-center gap-[20px] bg-bg'>
-      <menu
-        className='relative w-[900px] py-[10px] px-[20px] border-solid border-[1px] border-light-gray rounded-[8px] flex items-center gap-[20px]
-      '
-      >
+    <div className='bg-bg flex h-[100vh] w-[100vw] flex-col items-center justify-center gap-[20px]'>
+      <menu className='border-light-gray relative flex w-[900px] items-center gap-[20px] rounded-[8px] border-[1px] border-solid px-[20px] py-[10px]'>
         <button
-          className='w-[40px] h-[40px] bg-dark-gray text-[20px] text-light-text font-bold rounded-[8px] flex items-center justify-center hover:bg-light-gray transition-colors duration-200'
+          className='bg-dark-gray text-light-text hover:bg-light-gray flex h-[40px] w-[40px] items-center justify-center rounded-[8px] text-[20px] font-bold transition-colors duration-200'
           onClick={handleBoardDimensionButtonClick}
         >
           {boardDimension}
@@ -85,28 +103,28 @@ function Home() {
         )}
         <div className='flex items-center gap-[5px]'>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
+            className='bg-dark-gray hover:bg-light-gray hover:text-light-text text-dark-text flex items-center justify-center rounded-[8px] px-[12px] py-[4px] transition-colors duration-200'
             onClick={undoAll}
             disabled={!canUndo(1)}
           >
             <ChevronDoubleLeft className='text-inherit' />
           </button>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
+            className='bg-dark-gray hover:bg-light-gray hover:text-light-text text-dark-text flex items-center justify-center rounded-[8px] px-[12px] py-[4px] transition-colors duration-200'
             onClick={() => undo(1)}
             disabled={!canUndo(1)}
           >
             <ChevronLeft className='text-inherit' />
           </button>
           <button
-            className=' flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
+            className='bg-dark-gray hover:bg-light-gray hover:text-light-text text-dark-text flex items-center justify-center rounded-[8px] px-[12px] py-[4px] transition-colors duration-200'
             onClick={() => redo(1)}
             disabled={!canRedo(1)}
           >
             <ChevronRight className='text-inherit' />
           </button>
           <button
-            className='flex items-center justify-center px-[12px] py-[4px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
+            className='bg-dark-gray hover:bg-light-gray hover:text-light-text text-dark-text flex items-center justify-center rounded-[8px] px-[12px] py-[4px] transition-colors duration-200'
             onClick={redoAll}
             disabled={!canRedo(1)}
           >
@@ -114,13 +132,14 @@ function Home() {
           </button>
         </div>
         <button
-          className='absolute right-[20px] flex items-center justify-center w-[40px] h-[40px] bg-dark-gray rounded-[8px] hover:bg-light-gray hover:text-light-text text-dark-text transition-colors duration-200'
+          className='bg-dark-gray hover:bg-light-gray hover:text-light-text text-dark-text absolute right-[20px] flex h-[40px] w-[40px] items-center justify-center rounded-[8px] transition-colors duration-200'
           onClick={() => resetEditor()}
         >
           <Trash className='text-inherit' />
         </button>
       </menu>
       <CanvasBoardView
+        canvasRef={canvasRef}
         board={currentBoard}
         currentMove={currentMove}
         boardSize={boardSize}

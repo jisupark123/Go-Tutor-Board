@@ -9,6 +9,9 @@ import CanvasBoardRenderer from '@/go/renderers/CanvasBoardRenderer';
 import BoardMetrics from '@/go/utils/boardMetrics';
 
 type CanvasBoardViewProps = {
+  /** Canvas Ref */
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+
   /** 현재 보드 상태 */
   board: Board;
 
@@ -34,6 +37,7 @@ type CanvasBoardViewProps = {
   showStarPoints?: boolean;
 };
 export default function CanvasBoardView({
+  canvasRef,
   board,
   currentMove,
   boardSize,
@@ -43,7 +47,6 @@ export default function CanvasBoardView({
   disabled = false,
   showStarPoints = true,
 }: CanvasBoardViewProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasBoardRenderer = useRef<CanvasBoardRenderer>(new CanvasBoardRenderer());
 
   useEffect(() => {
@@ -54,7 +57,7 @@ export default function CanvasBoardView({
         canvasBoardRenderer.current.renderBoard(board, currentMove, showStarPoints);
       }
     })();
-  }, [boardStyleConfig, boardSize, board, currentMove, showStarPoints]);
+  }, [boardStyleConfig, boardSize, board, currentMove, showStarPoints, canvasRef]);
 
   function onClick(event: React.MouseEvent<HTMLCanvasElement>) {
     if (disabled) return;

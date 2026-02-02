@@ -1,5 +1,5 @@
 type Result = {
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export type AppResponse<T = Result> = {

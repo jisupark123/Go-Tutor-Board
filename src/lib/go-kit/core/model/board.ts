@@ -62,7 +62,7 @@ class Board implements DataObject<Board, BoardProps> {
     return moves;
   }
 
-  equals(other: any): boolean {
+  equals(other: unknown): boolean {
     if (this === other) return true;
     if (!(other instanceof Board)) return false;
     if (this.dimension !== other.dimension) return false;

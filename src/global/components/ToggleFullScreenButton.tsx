@@ -21,7 +21,7 @@ export default function ToggleFullScreenButton() {
     <button
       onClick={toggleFullscreen}
       className={cls(
-        'absolute right-[20px] bottom-[20px] flex items-center justify-center w-[40px] h-[40px] rounded-[8px] transition-colors duration-200',
+        'absolute right-[20px] bottom-[20px] flex h-[40px] w-[40px] items-center justify-center rounded-[8px] transition-colors duration-200',
         isFullscreen
           ? 'bg-light-gray text-light-text'
           : 'bg-dark-gray text-dark-text hover:bg-light-gray hover:text-light-text',
