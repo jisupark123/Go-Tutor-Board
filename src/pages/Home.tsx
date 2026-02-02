@@ -1,15 +1,17 @@
-import { useRef } from 'react';
 import {
+  AtariWarningLayer,
   BasicSequenceManager,
   Board,
   CanvasBoard,
   classicStoneStyleConfig,
   MoveProcessorFactory,
   PlaceModeSequenceHistoryEditor,
+  TerritoryGradationLayer,
   usePlaceModeSequenceHistoryEditor,
   woodBoardStyleConfig,
   type PlaceModeSequenceHistoryEditorPlaceMode,
   type StoneColor,
+  type StoneStyleConfig,
 } from '@dodagames/go';
 
 import ChevronLeft from '@/assets/icons/chevron-left.svg?react';
@@ -17,8 +19,12 @@ import ChevronRight from '@/assets/icons/chevron-right.svg?react';
 import ChevronDoubleLeft from '@/assets/icons/chevrons-left.svg?react';
 import ChevronDoubleRight from '@/assets/icons/chevrons-right.svg?react';
 import Trash from '@/assets/icons/trash.svg?react';
+import SettingsMenu, { type SettingsOption } from '@/global/components/SettingsMenu';
 import ToggleButtonGroup, { type ToggleButtonGroupOption } from '@/global/components/ToggleButtonGroup';
 import ToggleFullScreenButton from '@/global/components/ToggleFullScreenButton';
+import { useLocalStorage } from '@/global/hooks/useLocalStorage';
+import { NEON_PROFILES } from '@/go/neonProfiles';
+import { spaceBoardStyleConfig } from '@/go/spaceBoardStyleConfig';
 
 const placeModeOptions: ToggleButtonGroupOption<PlaceModeSequenceHistoryEditorPlaceMode>[] = [
   { label: '흑돌만', value: 'ONLY_BLACK' },
@@ -36,8 +42,13 @@ const editor = new PlaceModeSequenceHistoryEditor(
   MoveProcessorFactory.standardRule(),
 );
 
+const guideEffectStoneStyleConfig: StoneStyleConfig = { BLACK: NEON_PROFILES.BLUE, WHITE: NEON_PROFILES.WHITE };
+
 function Home() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [showStarPoints, setShowStarPoints] = useLocalStorage('settings-showStarPoints', true);
+  const [showCurrentMoveMarker, setShowCurrentMoveMarker] = useLocalStorage('settings-showCurrentMoveMarker', true);
+  const [showGuideEffect, setShowGuideEffect] = useLocalStorage('settings-showGuideEffect', false);
+
   const {
     currentBoard,
     currentMove,
@@ -69,6 +80,27 @@ function Home() {
       resetEditor(new Board(7));
     }
   }
+
+  const settingsOptions: SettingsOption[] = [
+    {
+      type: 'switch',
+      label: '화점 보기',
+      value: showStarPoints,
+      onChange: setShowStarPoints,
+    },
+    {
+      type: 'switch',
+      label: '마지막 수 표시',
+      value: showCurrentMoveMarker,
+      onChange: setShowCurrentMoveMarker,
+    },
+    {
+      type: 'switch',
+      label: '가이드 효과 표시',
+      value: showGuideEffect,
+      onChange: setShowGuideEffect,
+    },
+  ];
 
   // useEffect(() => {
   //   const handleKeyDown = (e: KeyboardEvent) => {
@@ -129,23 +161,26 @@ function Home() {
             <ChevronDoubleRight className='text-inherit' />
           </button>
         </div>
-        <button
-          className='bg-dark-gray hover:bg-light-gray hover:text-light-text text-dark-text absolute right-[20px] flex h-[40px] w-[40px] items-center justify-center rounded-[8px] transition-colors duration-200'
-          onClick={() => resetEditor()}
-        >
-          <Trash className='text-inherit' />
-        </button>
+        <div className='absolute right-[20px] flex items-center gap-[10px]'>
+          <button
+            className='bg-dark-gray hover:bg-light-gray hover:text-light-text text-dark-text flex h-[40px] w-[40px] items-center justify-center rounded-[8px] transition-colors duration-200'
+            onClick={() => resetEditor()}
+          >
+            <Trash className='text-inherit' />
+          </button>
+          <SettingsMenu options={settingsOptions} />
+        </div>
       </menu>
       <div className='h-[600px] w-[600px]'>
         <CanvasBoard
           board={currentBoard}
           {...(currentMove ? { currentMove } : {})}
-          showCurrentMoveMarker
-          showStarPoints
-          boardStyleConfig={woodBoardStyleConfig}
-          stoneStyleConfig={classicStoneStyleConfig}
+          showCurrentMoveMarker={showCurrentMoveMarker}
+          showStarPoints={showStarPoints}
+          boardStyleConfig={showGuideEffect ? spaceBoardStyleConfig : woodBoardStyleConfig}
+          stoneStyleConfig={showGuideEffect ? guideEffectStoneStyleConfig : classicStoneStyleConfig}
           handleLeftClick={leftClick}
-          // hoverPreview={currentTurn as StoneColor}
+          customLayers={showGuideEffect ? [new AtariWarningLayer(), new TerritoryGradationLayer()] : []}
         />
       </div>
       <ToggleFullScreenButton />
