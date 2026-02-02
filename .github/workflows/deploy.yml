@@ -30,17 +30,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20 # react-router v7 이상은 Node 20 필요
-          cache: 'yarn' # npm → yarn 캐시로 변경
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile # npm ci → yarn install
+        run: pnpm install --frozen-lockfile
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build
-        run: yarn build # npm run build → yarn build
+        run: pnpm build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
