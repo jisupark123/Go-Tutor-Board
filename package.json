@@ -9,7 +9,8 @@
     "lint-staged": "lint-staged",
     "lint": "eslint . --fix",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "preview": "vite preview",
     "check:all": "concurrently -g --kill-others-on-fail --prefix '[{name}]' --names 'LINT,TYPE,TEST' --prefix-colors 'blue,green,magenta' \"pnpm lint\" \"pnpm typecheck\" \"pnpm test\"",
     "postinstall": "husky"

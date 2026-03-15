@@ -6,7 +6,8 @@ import Switch from '@/global/components/Switch';
 
 export type SettingsOption =
   | { type: 'label'; label: string; onClick?: () => void }
-  | { type: 'switch'; label: string; value: boolean; onChange: (value: boolean) => void };
+  | { type: 'switch'; label: string; value: boolean; onChange: (value: boolean) => void }
+  | { type: 'separator' };
 
 interface SettingsMenuProps {
   options: SettingsOption[];
@@ -61,24 +62,29 @@ export default function SettingsMenu({ options }: SettingsMenuProps) {
             isOpen ? 'translate-y-0 scale-100 opacity-100' : 'pointer-events-none -translate-y-2 scale-95 opacity-0',
           )}
         >
-          {options.map((option, index) => (
-            <div
-              key={index}
-              className='hover:bg-dark-gray text-dark-text group flex cursor-pointer items-center justify-between rounded-[8px] px-[12px] py-[10px] transition-all duration-200 ease-in-out hover:pl-[14px]'
-              onClick={() => {
-                if (option.type === 'label') {
-                  option.onClick?.();
-                  setIsOpen(false);
-                } else if (option.type === 'switch') {
-                  option.onChange(!option.value);
-                }
-              }}
-            >
-              <span className='text-[14px] font-medium transition-colors group-hover:text-white'>{option.label}</span>
+          {options.map((option, index) => {
+            if (option.type === 'separator') {
+              return <div key={index} className='bg-dark-gray h-[1px] w-[calc(100%-12px)] self-center' />;
+            }
+            return (
+              <div
+                key={index}
+                className='hover:bg-dark-gray text-dark-text group flex cursor-pointer items-center justify-between rounded-[8px] px-[12px] py-[10px] transition-all duration-200 ease-in-out hover:pl-[14px]'
+                onClick={() => {
+                  if (option.type === 'label') {
+                    option.onClick?.();
+                    setIsOpen(false);
+                  } else if (option.type === 'switch') {
+                    option.onChange(!option.value);
+                  }
+                }}
+              >
+                <span className='text-[14px] font-medium transition-colors group-hover:text-white'>{option.label}</span>
 
-              {option.type === 'switch' && <Switch checked={option.value} onChange={option.onChange} />}
-            </div>
-          ))}
+                {option.type === 'switch' && <Switch checked={option.value} onChange={option.onChange} />}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

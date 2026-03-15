@@ -25,6 +25,7 @@ import ToggleFullScreenButton from '@/global/components/ToggleFullScreenButton';
 import { useLocalStorage } from '@/global/hooks/useLocalStorage';
 import { NEON_PROFILES } from '@/go/neonProfiles';
 import { spaceBoardStyleConfig } from '@/go/spaceBoardStyleConfig';
+import MapGenerator from '@/utils/mapGenerator';
 
 const placeModeOptions: ToggleButtonGroupOption<PlaceModeSequenceHistoryEditorPlaceMode>[] = [
   { label: '흑돌만', value: 'ONLY_BLACK' },
@@ -43,6 +44,8 @@ const editor = new PlaceModeSequenceHistoryEditor(
 );
 
 const guideEffectStoneStyleConfig: StoneStyleConfig = { BLACK: NEON_PROFILES.BLUE, WHITE: NEON_PROFILES.WHITE };
+
+const mapGenerator = new MapGenerator();
 
 function Home() {
   const [showStarPoints, setShowStarPoints] = useLocalStorage('settings-showStarPoints', true);
@@ -82,6 +85,17 @@ function Home() {
   }
 
   const settingsOptions: SettingsOption[] = [
+    {
+      type: 'label',
+      label: '맵 생성',
+      onClick: () => {
+        const generatedBoard = mapGenerator.generateMap(boardDimension);
+        resetEditor(generatedBoard);
+      },
+    },
+    {
+      type: 'separator',
+    },
     {
       type: 'switch',
       label: '화점 보기',
