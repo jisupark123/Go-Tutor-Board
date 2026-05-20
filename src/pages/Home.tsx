@@ -71,7 +71,9 @@ function Home() {
   const { dimension: boardDimension } = currentBoard;
 
   function handleBoardDimensionButtonClick() {
-    if (boardDimension === 7) {
+    if (boardDimension === 5) {
+      resetEditor(new Board(7));
+    } else if (boardDimension === 7) {
       resetEditor(new Board(9));
     } else if (boardDimension === 9) {
       resetEditor(new Board(11));
@@ -80,7 +82,7 @@ function Home() {
     } else if (boardDimension === 13) {
       resetEditor(new Board(19));
     } else {
-      resetEditor(new Board(7));
+      resetEditor(new Board(5));
     }
   }
 
