@@ -11,6 +11,7 @@ import {
   usePlaceModeSequenceEditor,
   useSound,
   woodBoardStyleConfig,
+  type PlaceMode,
   type SequenceManager,
   type StoneColor,
 } from '@dodagames/go';
@@ -26,9 +27,6 @@ import ToggleButtonGroup, { type ToggleButtonGroupOption } from '@/global/compon
 import ToggleFullScreenButton from '@/global/components/ToggleFullScreenButton';
 import { useLocalStorage } from '@/global/hooks/useLocalStorage';
 import MapGenerator from '@/utils/mapGenerator';
-
-// @dodagames/go가 PlaceMode 타입을 export 하지 않아 동일한 리터럴 유니온을 로컬로 정의한다.
-type PlaceMode = 'ONLY_BLACK' | 'ONLY_WHITE' | 'ALTERNATE';
 
 const BOARD_SIZES = [5, 7, 9, 11, 13, 19] as const;
 const DEFAULT_BOARD_SIZE = 13;
@@ -51,6 +49,7 @@ interface HomeBoardProps {
   onChangeBoardSize: () => void;
   onClear: () => void;
   onGenerateMap: () => void;
+  onUploadSgf: (file: File) => void;
   /** 맵 생성·SGF 불러오기 등으로 복원한 수순. 주어지면 빈 판 대신 이 수순으로 초기화한다. */
   initialSequenceManager?: SequenceManager;
   /** 복원한 수순의 다음 차례. */
@@ -67,6 +66,7 @@ function HomeBoard({
   onChangeBoardSize,
   onClear,
   onGenerateMap,
+  onUploadSgf,
   initialSequenceManager,
   initialTurn,
 }: HomeBoardProps) {
@@ -74,6 +74,14 @@ function HomeBoard({
   const [showCurrentMoveMarker, setShowCurrentMoveMarker] = useLocalStorage('settings-showCurrentMoveMarker', true);
 
   const { playStone } = useSound();
+
+  // SGF 불러오기용 숨김 파일 입력. 설정 메뉴 버튼에서 click()으로 연다.
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) onUploadSgf(file);
+    e.target.value = ''; // 같은 파일을 다시 선택해도 onChange가 발생하도록 초기화
+  };
 
   const {
     currentBoard,
@@ -125,6 +133,11 @@ function HomeBoard({
       type: 'label',
       label: '맵 생성',
       onClick: onGenerateMap,
+    },
+    {
+      type: 'label',
+      label: 'SGF 불러오기',
+      onClick: () => fileInputRef.current?.click(),
     },
     {
       type: 'label',
@@ -199,6 +212,7 @@ function HomeBoard({
             <Trash className='text-inherit' />
           </button>
           <SettingsMenu options={settingsOptions} />
+          <input ref={fileInputRef} type='file' accept='.sgf' className='hidden' onChange={handleFileChange} />
         </div>
       </menu>
       <div className='h-[600px] w-[600px]'>
@@ -306,6 +320,7 @@ function Home() {
         onChangeBoardSize={cycleBoardSize}
         onClear={clearBoard}
         onGenerateMap={generateMap}
+        onUploadSgf={applySgfFile}
         {...(loaded ? { initialSequenceManager: loaded.sequenceManager, initialTurn: loaded.turn } : {})}
       />
 

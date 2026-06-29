@@ -19,7 +19,7 @@
     "*.{js,ts,jsx,tsx}": "eslint"
   },
   "dependencies": {
-    "@dodagames/go": "^1.1.56",
+    "@dodagames/go": "^1.1.57",
     "axios": "^1.11.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.563.0",

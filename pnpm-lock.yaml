@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@dodagames/go':
-        specifier: ^1.1.56
-        version: 1.1.56
+        specifier: ^1.1.57
+        version: 1.1.57
       axios:
         specifier: ^1.11.0
         version: 1.12.2
@@ -184,8 +184,8 @@ packages:
     resolution: {integrity: sha512-bkFqkLhh3pMBUQQkpVgWDWq/lqzc2678eUyDlTBhRqhCHFguYYGM0Efga7tYk4TogG/3x0EEl66/OQ+WGbWB/Q==}
     engines: {node: '>=6.9.0'}
 
-  '@dodagames/go@1.1.56':
-    resolution: {integrity: sha512-NxV81mJ6q6aQJ64SW5IydTD/Obc0ts1EfKyDwXouGIHH2iKvLjXwdsDShqi8KglILzvjp/il8N4JlENnAW+Clw==, tarball: https://npm.pkg.github.com/download/@dodagames/go/1.1.56/f06b9acc68d99847999a4c3dee569497c66f5f54}
+  '@dodagames/go@1.1.57':
+    resolution: {integrity: sha512-Es8Q2tNWd7ryxvs99N+roAv1mxMdp4GQ1PIAEXaTKJLan4CLyOvuTDAfM2x7J9cz5TgKk7ijRH/J7Zlky0ZXLA==, tarball: https://npm.pkg.github.com/download/@dodagames/go/1.1.57/ee7e9550e7a5a838f6e044a1774bf702e528198a}
 
   '@esbuild/aix-ppc64@0.25.10':
     resolution: {integrity: sha512-0NFWnA+7l41irNuaSVlLfgNT12caWJVLzp5eAVhZ0z1qpxbockccEt3s+149rE64VUI3Ml2zt8Nv5JVc4QXTsw==}
@@ -2787,7 +2787,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@dodagames/go@1.1.56':
+  '@dodagames/go@1.1.57':
     dependencies:
       '@sabaki/sgf': 3.4.7
       gradient-parser: 1.2.0
