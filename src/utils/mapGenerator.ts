@@ -1,4 +1,4 @@
-import { basicBoardValidator, Board, BoardRuleHelper, Coordinate, Move, Stone } from '@dodagames/go';
+import { basicBoardValidator, Board, BoardRuleHelper, Coordinate, Move, Stone, type StoneColor } from '@dodagames/go';
 
 type IntRange = [number, number];
 
@@ -66,12 +66,12 @@ export default class MapGenerator {
     return board;
   }
 
-  private selectRandomStone(remainBlack: number, remainWhite: number): [Stone, number, number] {
+  private selectRandomStone(remainBlack: number, remainWhite: number): [StoneColor, number, number] {
     if (remainBlack <= 0 && remainWhite <= 0) {
       throw new Error('No stones remaining');
     }
 
-    const selectable: Stone[] = [];
+    const selectable: StoneColor[] = [];
     if (remainBlack > 0) selectable.push(Stone.BLACK);
     if (remainWhite > 0) selectable.push(Stone.WHITE);
 
